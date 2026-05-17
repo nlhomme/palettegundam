@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0e0e10" />
+  <title>Palette Gundam</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">Palette Gundam</span>
+      <span class="brand-tagline" data-i18n="app.tagline">harmony-driven character palettes</span>
+    </div>
+
+    <div class="controls">
+      <label class="control">
+        <span class="control-label" data-i18n="ui.harmony">Harmony</span>
+        <select id="harmony-select" class="harmony-select"></select>
+      </label>
+
+      <button id="regen-all" class="btn btn-primary" data-i18n-title="title.regenAll" title="Regenerate all (Space)">
+        <span class="btn-icon">↻</span>
+        <span class="btn-label" data-i18n="ui.regenerate">Regenerate</span>
+      </button>
+
+      <button id="add-character" class="btn" data-i18n-title="title.addCharacter" title="Add character palette">
+        <span class="btn-icon">＋</span>
+        <span class="btn-label" data-i18n="ui.character">Character</span>
+      </button>
+
+      <div class="menu">
+        <button id="export-btn" class="btn">
+          <span class="btn-label" data-i18n="ui.export">Export</span>
+          <span class="btn-icon">▾</span>
+        </button>
+        <div id="export-menu" class="menu-popover" role="menu" hidden>
+          <button data-export="procreate-all" role="menuitem" data-i18n="export.procreateAll">ProCreate · all palettes (.zip)</button>
+          <button data-export="procreate-each" role="menuitem" data-i18n="export.procreateEach">ProCreate · each as .swatches</button>
+          <button data-export="png" role="menuitem" data-i18n="export.png">PNG preview</button>
+          <button data-export="css" role="menuitem" data-i18n="export.css">CSS variables</button>
+          <button data-export="json" role="menuitem" data-i18n="export.json">JSON</button>
+        </div>
+      </div>
+
+      <button id="share-btn" class="btn" data-i18n-title="title.share" title="Copy short share link">
+        <span class="btn-icon">↗</span>
+        <span class="btn-label" data-i18n="ui.share">Share</span>
+      </button>
+
+      <button id="lang-toggle" class="btn btn-lang" data-i18n-title="title.switchLanguage" title="Switch language">
+        <span id="lang-toggle-label">FR</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="palettes" class="palettes"></main>
+
+  <button id="fab-regen" class="fab" data-i18n-aria="title.regenFab" aria-label="Regenerate all">↻</button>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <dialog id="hex-dialog" class="hex-dialog">
+    <form method="dialog" id="hex-form">
+      <label>
+        <span data-i18n="dialog.hexLabel">Hex color</span>
+        <input id="hex-input" type="text" maxlength="7" autocomplete="off" spellcheck="false" />
+      </label>
+      <div class="dialog-actions">
+        <button value="cancel" type="button" id="hex-cancel" data-i18n="dialog.cancel">Cancel</button>
+        <button value="ok" id="hex-ok" data-i18n="dialog.apply">Apply</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script type="module" src="/js/main.js"></script>
+</body>
+</html>

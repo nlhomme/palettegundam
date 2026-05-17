@@ -1,0 +1,2 @@
+# palettegundam
+Generate palettes

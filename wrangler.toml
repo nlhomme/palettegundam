@@ -1,0 +1,12 @@
+name = "palettegundam"
+main = "worker/index.js"
+compatibility_date = "2026-05-17"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+[[kv_namespaces]]
+binding = "PALETTES"
+id = "5d40fe725a944dd491d714bca0bbf251"
+preview_id = "c05851c9724447f2a66c66daf7c455a2"

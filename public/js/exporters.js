@@ -27,8 +27,12 @@ export function procreateSwatchesBlob(palette) {
   return new Blob([zip], { type: 'application/octet-stream' });
 }
 
+function allPalettes(state) {
+  return [state.background, ...(state.floor ? [state.floor] : []), ...state.characters];
+}
+
 export function procreateBundleBlob(state) {
-  const all = [state.background, ...state.characters];
+  const all = allPalettes(state);
   const files = all.map((p) => {
     const innerZip = buildZip([{ name: 'Swatches.json', data: JSON.stringify(paletteSwatchesJson(p)) }]);
     return { name: `${safeName(p.name)}.swatches`, data: innerZip };
@@ -56,6 +60,7 @@ export function paletteToCss(state) {
     });
   };
   emit(state.background, 'bg');
+  if (state.floor) emit(state.floor, 'floor');
   state.characters.forEach((c, i) => emit(c, `char${i + 1}`));
   lines.push('}');
   return lines.join('\n') + '\n';
@@ -66,6 +71,7 @@ export function paletteToJson(state) {
     harmony: state.activeHarmony,
     anchorHue: state.anchorHue,
     background: paletteDump(state.background),
+    floor: state.floor ? paletteDump(state.floor) : null,
     characters: state.characters.map(paletteDump),
   };
   return JSON.stringify(dump, null, 2) + '\n';
@@ -82,7 +88,7 @@ function paletteDump(p) {
 }
 
 export function paletteToPngBlob(state) {
-  const palettes = [state.background, ...state.characters];
+  const palettes = allPalettes(state);
   const swatchW = 160, swatchH = 160, headerH = 44, padding = 24;
   const rowCells = 5; // characters set the row width
   const width = padding * 2 + rowCells * swatchW;

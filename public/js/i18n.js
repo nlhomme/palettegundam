@@ -39,6 +39,7 @@ const TRANSLATIONS = {
     'export.json': 'JSON',
 
     'palette.background': 'Background',
+    'palette.floor': 'Floor',
     'palette.character': 'Character {n}',
 
     'role.skin': 'Skin',
@@ -46,6 +47,11 @@ const TRANSLATIONS = {
     'role.main': 'Main',
     'role.secondary': 'Secondary',
     'role.accent': 'Accent',
+
+    'floorMode.shade': 'Shade of BG',
+    'floorMode.earth': 'Earth tone',
+    'floorMode.complement': 'Complement of BG',
+    'title.floorMode': 'Floor color rule',
 
     'toast.copied': 'Copied {hex}',
     'toast.bgMin': 'Background must keep at least {n} color.',
@@ -59,6 +65,12 @@ const TRANSLATIONS = {
     'dialog.hexLabel': 'Hex color',
     'dialog.cancel': 'Cancel',
     'dialog.apply': 'Apply',
+    'dialog.close': 'Close',
+
+    'about.title': 'About',
+    'about.version': 'Version {version}',
+    'about.credits': 'Coded by {author} with {tool}.',
+    'title.about': 'About Palette Gundam',
 
     'boot.error': 'Boot error: {msg}',
   },
@@ -102,6 +114,7 @@ const TRANSLATIONS = {
     'export.json': 'JSON',
 
     'palette.background': 'Arrière-plan',
+    'palette.floor': 'Sol',
     'palette.character': 'Personnage {n}',
 
     'role.skin': 'Peau',
@@ -109,6 +122,11 @@ const TRANSLATIONS = {
     'role.main': 'Principale',
     'role.secondary': 'Secondaire',
     'role.accent': 'Accent',
+
+    'floorMode.shade': 'Ombre du fond',
+    'floorMode.earth': 'Ton terreux',
+    'floorMode.complement': 'Complément du fond',
+    'title.floorMode': 'Règle de couleur du sol',
 
     'toast.copied': '{hex} copié',
     'toast.bgMin': "L'arrière-plan doit garder au moins {n} couleur.",
@@ -122,6 +140,12 @@ const TRANSLATIONS = {
     'dialog.hexLabel': 'Code hex',
     'dialog.cancel': 'Annuler',
     'dialog.apply': 'Appliquer',
+    'dialog.close': 'Fermer',
+
+    'about.title': 'À propos',
+    'about.version': 'Version {version}',
+    'about.credits': 'Codé par {author} avec {tool}.',
+    'title.about': 'À propos de Palette Gundam',
 
     'boot.error': 'Erreur de démarrage : {msg}',
   },

@@ -115,6 +115,18 @@ body {
   justify-content: center;
 }
 
+.btn-icon-only {
+  width: 34px;
+  padding: 0;
+  justify-content: center;
+}
+.btn-icon-only .btn-icon {
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 15px;
+}
+
 /* -------- Export menu -------- */
 .menu { position: relative; }
 .menu-popover {
@@ -185,6 +197,18 @@ body {
   min-width: 0;
 }
 .palette-name:focus { outline: 1px solid var(--accent); background: #111114; }
+
+.palette-mode-select {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 6px;
+  font: 500 11px inherit;
+  max-width: 130px;
+  cursor: pointer;
+}
+.palette-mode-select:focus { outline: 1px solid var(--accent); }
 
 .icon-btn {
   appearance: none;
@@ -337,6 +361,37 @@ body {
   font: inherit;
 }
 .dialog-actions button[value="ok"] { background: var(--accent); border-color: var(--accent); color: #1a0d06; font-weight: 600; }
+
+.about-dialog {
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 22px 24px;
+  max-width: 380px;
+}
+.about-dialog::backdrop { background: rgba(0,0,0,0.45); }
+.about-title {
+  margin: 0 0 14px 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+.about-version {
+  margin: 0 0 8px 0;
+  font: 500 13px ui-monospace, monospace;
+  color: var(--text-dim);
+}
+.about-credits {
+  margin: 0 0 6px 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.about-credits a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px dotted currentColor;
+}
+.about-credits a:hover { border-bottom-style: solid; }
 
 /* -------- Mobile / portrait -------- */
 @media (max-width: 720px) {

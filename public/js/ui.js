@@ -6,6 +6,7 @@ import {
   BG_MAX,
   BG_MIN,
   CHARACTER_ROLES,
+  FLOOR_MODES,
   generateAll,
   regeneratePalette,
   removeBackgroundSwatch,
@@ -20,6 +21,7 @@ import {
 } from './exporters.js';
 import { postShare } from './state.js';
 import { otherLanguage, setLanguage, t } from './i18n.js';
+import { APP_VERSION } from './version.js';
 
 export function mountUI(state, hooks = {}) {
   const root = document.getElementById('palettes');
@@ -37,6 +39,11 @@ export function mountUI(state, hooks = {}) {
   const hexCancel = document.getElementById('hex-cancel');
   const langToggleBtn = document.getElementById('lang-toggle');
   const langToggleLabel = document.getElementById('lang-toggle-label');
+  const aboutBtn = document.getElementById('about-btn');
+  const aboutDialog = document.getElementById('about-dialog');
+  const aboutClose = document.getElementById('about-close');
+  const aboutVersion = document.getElementById('about-version');
+  const aboutCredits = document.getElementById('about-credits');
 
   let pendingHexEdit = null;
 
@@ -69,9 +76,10 @@ export function mountUI(state, hooks = {}) {
   function render() {
     harmonySelect.value = state.masterHarmony;
     root.innerHTML = '';
-    root.appendChild(renderPalette(state.background, { isBackground: true }));
+    root.appendChild(renderPalette(state.background, { kind: 'background' }));
+    if (state.floor) root.appendChild(renderPalette(state.floor, { kind: 'floor' }));
     state.characters.forEach((p, idx) => {
-      root.appendChild(renderPalette(p, { isBackground: false, charIdx: idx }));
+      root.appendChild(renderPalette(p, { kind: 'character', charIdx: idx }));
     });
   }
 
@@ -93,7 +101,7 @@ export function mountUI(state, hooks = {}) {
     });
     header.appendChild(nameInput);
 
-    if (opts.isBackground) {
+    if (opts.kind === 'background') {
       const minusBtn = iconButton('−', t('title.removeBgColor'), () => {
         if (removeBackgroundSwatch(state)) changed();
         else showToast(t('toast.bgMin', { n: BG_MIN }));
@@ -111,6 +119,22 @@ export function mountUI(state, hooks = {}) {
       header.appendChild(plusBtn);
     }
 
+    if (opts.kind === 'floor') {
+      const modeSelect = document.createElement('select');
+      modeSelect.className = 'palette-mode-select';
+      modeSelect.title = t('title.floorMode');
+      modeSelect.innerHTML = FLOOR_MODES
+        .map((m) => `<option value="${m}">${t('floorMode.' + m)}</option>`)
+        .join('');
+      modeSelect.value = palette.mode || FLOOR_MODES[0];
+      modeSelect.addEventListener('change', () => {
+        palette.mode = modeSelect.value;
+        regeneratePalette(state, palette);
+        changed();
+      });
+      header.appendChild(modeSelect);
+    }
+
     const regenBtn = iconButton('↻', t('title.regenThis'), () => {
       regeneratePalette(state, palette);
       changed();
@@ -123,7 +147,7 @@ export function mountUI(state, hooks = {}) {
     });
     header.appendChild(exportOne);
 
-    if (!opts.isBackground) {
+    if (opts.kind === 'character') {
       const removeBtn = iconButton('✕', t('title.removeChar'), () => {
         if (state.characters.length <= 1) {
           showToast(t('toast.charMin'));
@@ -371,6 +395,27 @@ export function mountUI(state, hooks = {}) {
     }
   });
 
+  // -------- About dialog --------
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+    }[c]));
+  }
+  function renderAbout() {
+    aboutVersion.textContent = t('about.version', { version: APP_VERSION });
+    const author = `<a href="https://nicolas.lhomme.xyz" target="_blank" rel="noopener noreferrer">${escapeHtml('Nicolas Lhomme')}</a>`;
+    const tool = `<a href="https://claude.com/claude-code" target="_blank" rel="noopener noreferrer">${escapeHtml('Claude Code')}</a>`;
+    aboutCredits.innerHTML = t('about.credits', { author, tool });
+  }
+  aboutBtn.addEventListener('click', () => {
+    renderAbout();
+    aboutDialog.showModal();
+  });
+  aboutClose.addEventListener('click', (e) => {
+    e.preventDefault();
+    aboutDialog.close();
+  });
+
   // -------- Language toggle --------
   updateLangToggle();
   langToggleBtn.addEventListener('click', () => {
@@ -378,6 +423,7 @@ export function mountUI(state, hooks = {}) {
     populateHarmonyOptions();
     updateLangToggle();
     render();
+    if (aboutDialog.open) renderAbout();
   });
 
   // Initial render

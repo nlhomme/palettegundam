@@ -6,6 +6,8 @@
   <meta name="theme-color" content="#0e0e10" />
   <title>Palette Gundam</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
@@ -54,6 +56,10 @@
       <button id="lang-toggle" class="btn btn-lang" data-i18n-title="title.switchLanguage" title="Switch language">
         <span id="lang-toggle-label">FR</span>
       </button>
+
+      <button id="about-btn" class="btn btn-icon-only" data-i18n-title="title.about" title="About Palette Gundam" aria-label="About">
+        <span class="btn-icon">i</span>
+      </button>
     </div>
   </header>
 
@@ -62,6 +68,17 @@
   <button id="fab-regen" class="fab" data-i18n-aria="title.regenFab" aria-label="Regenerate all">↻</button>
 
   <div id="toast" class="toast" hidden></div>
+
+  <dialog id="about-dialog" class="about-dialog">
+    <div class="about-content">
+      <h2 class="about-title" data-i18n="about.title">About</h2>
+      <p class="about-version" id="about-version"></p>
+      <p class="about-credits" id="about-credits"></p>
+      <div class="dialog-actions">
+        <button value="ok" id="about-close" data-i18n="dialog.close">Close</button>
+      </div>
+    </div>
+  </dialog>
 
   <dialog id="hex-dialog" class="hex-dialog">
     <form method="dialog" id="hex-form">

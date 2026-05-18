@@ -4,6 +4,8 @@ Harmony-driven character palette generator. Like Coolors, but built around the c
 
 Pure HTML/CSS/vanilla JS. Runs on a Cloudflare Worker.
 
+Palette Gundam can bu used here: [https://palettegundam.lhomme.xyz](https://palettegundam.lhomme.xyz)
+
 ---
 
 ## What it does
@@ -22,6 +24,8 @@ Pure HTML/CSS/vanilla JS. Runs on a Cloudflare Worker.
 - **Bilingual UI**: French / English, auto-detected from the browser, toggleable.
 - **Exports**: ProCreate `.swatches` (per palette or zipped bundle), PNG preview, CSS variables, JSON.
 - **Shareable short URL** via a Cloudflare KV-backed `/api/share` endpoint. Full state also lives in the URL hash, so reload preserves everything.
+- **Installable** as a home-screen / standalone app on iOS and Android via a Web App Manifest (`manifest.webmanifest`) and platform-specific icons.
+- **About dialog** ("i" button in the top bar) shows the current version (sourced from `package.json`) and credits.
 
 ---
 
@@ -78,25 +82,39 @@ This runs `wrangler dev` with Miniflare's local KV emulation; no Cloudflare acco
 
 ```text
 palettegundam/
-├── public/                   # static assets, served via Workers ASSETS binding
+├── public/                       # static assets, served via Workers ASSETS binding
 │   ├── index.html
 │   ├── styles.css
-│   ├── favicon.svg
+│   ├── favicon.svg               # browser tab icon (color wheel, vector)
+│   ├── apple-touch-icon.png      # iOS home-screen icon (180x180)
+│   ├── icon-192.png              # Android PWA icon (192x192, "any" purpose)
+│   ├── icon-512.png              # Android PWA icon (512x512, "any" purpose)
+│   ├── icon-512-maskable.png     # Android adaptive icon with safe zone
+│   ├── manifest.webmanifest      # Web App Manifest for "Add to Home Screen"
 │   └── js/
-│       ├── main.js           # boot: parse URL, install state, mount UI
-│       ├── i18n.js           # English / French translations
-│       ├── state.js          # AppState + URL-hash encode/decode + share client
-│       ├── color.js          # HSL / HSV / RGB / HEX conversions
-│       ├── harmony.js        # 7 harmonies, hue-offset distribution
-│       ├── generator.js      # palette generation, lock-aware, semantic slots
-│       ├── zip.js            # minimal STORE ZIP writer (vanilla, no deps)
-│       ├── exporters.js      # ProCreate / PNG / CSS / JSON
-│       └── ui.js             # rendering, swatch interactions, DnD
+│       ├── main.js               # boot: parse URL, install state, mount UI
+│       ├── i18n.js               # English / French translations
+│       ├── state.js              # AppState + URL-hash encode/decode + share client
+│       ├── color.js              # HSL / HSV / RGB / HEX conversions
+│       ├── harmony.js            # 7 harmonies, hue-offset distribution
+│       ├── generator.js          # palette generation, lock-aware, semantic slots
+│       ├── zip.js                # minimal STORE ZIP writer (vanilla, no deps)
+│       ├── exporters.js          # ProCreate / PNG / CSS / JSON
+│       ├── version.js            # generated: mirrors package.json's version
+│       └── ui.js                 # rendering, swatch interactions, DnD
+├── scripts/
+│   ├── build-icons.mjs           # rasterizes the brand wheel into the PNG icon sizes
+│   └── build-version.mjs         # writes public/js/version.js from package.json
 └── worker/
-    └── index.js              # fetch handler: /api/share + ASSETS fallthrough
+    └── index.js                  # fetch handler: /api/share + ASSETS fallthrough
 ```
 
-No frameworks, no bundler. Modules load directly via `<script type="module">`.
+No frameworks, no bundler. Modules load directly via `<script type="module">`. Two generated files live under `public/` and are checked in:
+
+- `public/js/version.js` — mirrors the `version` field from `package.json`. Regenerate with `npm run build:version` whenever you bump the version.
+- `public/apple-touch-icon.png`, `public/icon-192.png`, `public/icon-512.png`, `public/icon-512-maskable.png` — rasterized from `public/favicon.svg` via `sharp`. Regenerate with `npm run build:icons` when the wheel design changes.
+
+`npm run build` runs both steps. Run it after editing `package.json`'s version or the brand colors.
 
 ---
 

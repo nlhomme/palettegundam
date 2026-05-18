@@ -124,6 +124,66 @@ const CHARACTER_GENERATORS = [
   generateAccentSwatch,
 ];
 
+export const FLOOR_MODES = ['shade', 'earth', 'complement'];
+export const FLOOR_DEFAULT_MODE = 'shade';
+
+function generateFloorShade(anchorHue) {
+  return makeSwatch(
+    normHue(anchorHue + jitter(6)),
+    rand(10, 25),
+    rand(18, 32),
+  );
+}
+
+function generateFloorEarth(anchorHue) {
+  const families = [
+    { hue: [22, 42], sat: [28, 48], lit: [24, 42] },  // warm brown
+    { hue: [200, 235], sat: [4, 14], lit: [30, 50] }, // cool stone / grey
+    { hue: [78, 112], sat: [18, 38], lit: [22, 38] }, // mossy green
+  ];
+  const fam = pick(families);
+  let h = rand(...fam.hue);
+  // Nudge toward the anchor hue for harmony.
+  const delta = ((normHue(anchorHue) - h + 540) % 360) - 180;
+  h = normHue(h + Math.sign(delta) * Math.min(Math.abs(delta) * 0.18, 14));
+  return makeSwatch(h, rand(...fam.sat), rand(...fam.lit));
+}
+
+function generateFloorComplement(anchorHue) {
+  return makeSwatch(
+    normHue(anchorHue + 180 + jitter(10)),
+    rand(22, 44),
+    rand(20, 36),
+  );
+}
+
+const FLOOR_GENERATORS = {
+  shade: generateFloorShade,
+  earth: generateFloorEarth,
+  complement: generateFloorComplement,
+};
+
+export function generateFloor(palette, anchorHue) {
+  if (!Array.isArray(palette.swatches) || palette.swatches.length !== 1) {
+    palette.swatches = [makeSwatch(0, 0, 50)];
+  }
+  if (!palette.swatches[0].locked) {
+    const mode = FLOOR_MODES.includes(palette.mode) ? palette.mode : FLOOR_DEFAULT_MODE;
+    palette.swatches[0] = FLOOR_GENERATORS[mode](anchorHue);
+  }
+  palette.role = 'floor';
+}
+
+export function makeFloorPalette(name) {
+  return {
+    name,
+    role: 'floor',
+    mode: FLOOR_DEFAULT_MODE,
+    hueOffsetFromAnchor: 0,
+    swatches: [makeSwatch(0, 0, 50)],
+  };
+}
+
 // Background lightness ramps keyed by swatch count.
 const BACKGROUND_RAMPS = {
   1: [50],
@@ -237,12 +297,15 @@ export function generateAll(state) {
   });
 
   generateBackground(state.background, state.anchorHue);
+  if (state.floor) generateFloor(state.floor, state.anchorHue);
   state.characters.forEach((c) => generateCharacter(c, state.anchorHue));
 }
 
 export function regeneratePalette(state, palette) {
   if (palette.role === 'background') {
     generateBackground(palette, state.anchorHue);
+  } else if (palette.role === 'floor') {
+    generateFloor(palette, state.anchorHue);
   } else {
     const lockedHue = lockedHueFor(palette);
     if (lockedHue !== null) {

@@ -1,13 +1,17 @@
 {
   "name": "palettegundam",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "build:icons": "node scripts/build-icons.mjs",
+    "build:version": "node scripts/build-version.mjs",
+    "build": "npm run build:version && npm run build:icons"
   },
   "devDependencies": {
+    "sharp": "^0.34.5",
     "wrangler": "^4.92.0"
   }
 }

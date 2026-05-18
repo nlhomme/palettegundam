@@ -1,4 +1,4 @@
-import { generateAll, makeEmptyPalette } from './generator.js';
+import { generateAll, generateFloor, makeEmptyPalette, makeFloorPalette } from './generator.js';
 import { t } from './i18n.js';
 
 export function defaultState() {
@@ -7,6 +7,7 @@ export function defaultState() {
     activeHarmony: 'analogous',
     anchorHue: 0,
     background: makeEmptyPalette(t('palette.background'), 'background'),
+    floor: makeFloorPalette(t('palette.floor')),
     characters: [makeEmptyPalette(t('palette.character', { n: 1 }), 'character')],
   };
 }
@@ -24,21 +25,24 @@ function toWire(state) {
     a: state.activeHarmony,
     n: state.anchorHue,
     b: paletteToWire(state.background),
+    f: state.floor ? paletteToWire(state.floor) : undefined,
     c: state.characters.map(paletteToWire),
   };
 }
 
 function paletteToWire(p) {
-  return {
+  const w = {
     n: p.name,
     r: p.role,
     o: p.hueOffsetFromAnchor ?? 0,
     s: p.swatches.map((sw) => [sw.h, sw.s, sw.l, sw.locked ? 1 : 0]),
   };
+  if (p.mode) w.m = p.mode;
+  return w;
 }
 
 function paletteFromWire(w) {
-  return {
+  const p = {
     name: w.n,
     role: w.r,
     hueOffsetFromAnchor: w.o ?? 0,
@@ -46,16 +50,27 @@ function paletteFromWire(w) {
       h, s, l, locked: !!lk,
     })),
   };
+  if (w.m) p.mode = w.m;
+  return p;
 }
 
 function fromWire(w) {
-  return {
+  const state = {
     masterHarmony: w.h,
     activeHarmony: w.a,
     anchorHue: w.n,
     background: paletteFromWire(w.b),
+    floor: null,
     characters: (w.c || []).map(paletteFromWire),
   };
+  if (w.f) {
+    state.floor = paletteFromWire(w.f);
+  } else {
+    // Backwards-compat: state predates the floor palette. Synthesize one.
+    state.floor = makeFloorPalette(t('palette.floor'));
+    generateFloor(state.floor, state.anchorHue);
+  }
+  return state;
 }
 
 function b64urlEncode(str) {
